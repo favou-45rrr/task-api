@@ -24,4 +24,4 @@ SELECT * FROM tasks WHERE done = 1;
 This query returns all the tasks in the tasks table whose `done` status is completed.
 
 ## Database screenshot
-![Database in DB Browser](task img.png)
+![Database in DB Browser](task_img.png)
