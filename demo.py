@@ -57,10 +57,20 @@ def check_status():
 
 
 @app.get("/tasks")
-def return_task():
-    c.execute("SELECT * FROM tasks")
-    all = c.fetchall()
-    return all
+def return_task(search: str | None = None,done: bool | None = None):
+    if search is not None :
+        pattern = f"%{search}%"
+        c.execute("SELECT * FROM tasks WHERE title LIKE ? ORDER BY title",(pattern,))
+        one = c.fetchall()
+        return one
+    if done is not None:
+        c.execute("SELECT * FROM tasks WHERE done = ? ORDER BY title",(done,))
+        one = c.fetchall()
+        return one
+    else:
+        c.execute("SELECT * FROM tasks ORDER BY title")
+        all = c.fetchall()
+        return all
 
 
 
@@ -71,7 +81,19 @@ def move_task(task_id: int):
     if one is None:
         return JSONResponse(status_code=404, content={"error": f"Task {task_id} not found"})
     return one
-
+@app.get("/stats")
+def count():
+    c.execute("SELECT COUNT(*) FROM tasks")
+    total = c.fetchone()[0]
+    c.execute("SELECT COUNT(*) FROM tasks WHERE done = 1 ")
+    completed = c.fetchone()[0]
+    c.execute("SELECT COUNT(*) FROM tasks WHERE done = 0 ")
+    incompleted = c.fetchone()[0]
+    return {
+        "total": total,
+        "completed": completed,
+        "incomplete": incompleted
+        }
 
 @app.post("/tasks", status_code=201)
 def create_task(stuff: Create):
