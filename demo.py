@@ -26,7 +26,12 @@ def describe():
 
 @app.get("/health")
 def check_status():
-    return {"status": "ok"}
+    with conn.cursor() as cur:
+        cur.execute("SELECT 1")
+        result = cur.fetchone()
+        if result is None:
+            return JSONResponse(status_code=500, content={"status": "error"})
+        return {"status": "ok","db": "ok"}
 
 @app.get("/tasks")
 def return_task(search: str | None = None,done: bool | None = None):

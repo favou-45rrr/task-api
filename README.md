@@ -64,3 +64,11 @@ content-type: application/json
 [[1,"build",true],[3,"eat",true],[2,"swim",false]]
 ```
 
+
+
+## Why volumes exist
+A container's own filesystem is temporary — if you remove the container, 
+everything inside it, including database data, is gone permanently. A 
+volume stores that data outside the container, so it survives even if 
+the container is deleted and recreated.
+
