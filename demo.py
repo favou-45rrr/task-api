@@ -13,6 +13,8 @@ class Update(BaseModel):
 
 
 app = FastAPI()
+from enrich import router as enrich_router
+app.include_router(enrich_router)
 
 
 @app.get("/")

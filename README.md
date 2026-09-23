@@ -72,3 +72,29 @@ everything inside it, including database data, is gone permanently. A
 volume stores that data outside the container, so it survives even if 
 the container is deleted and recreated.
 
+## Testing the endpoint
+
+### Valid request
+```bash
+curl -i -X POST http://localhost:3000/enrich -H "Content-Type: application/json" -d '{"title": "Olio", "description": "A book about history."}'
+```
+Response:
+
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"received":"Olio"}
+
+
+### Invalid request (empty title)
+```bash
+curl -i -X POST http://localhost:3000/enrich -H "Content-Type: application/json" -d '{"title": "", "description": "A book about history."}'
+```
+Response:
+
+HTTP/1.1 422 Unprocessable Content
+content-type: application/json
+
+{"detail":[{"type":"string_too_short","loc":["body","title"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}
+
+*Note: the assignment brief describes this as a `400`; FastAPI's default for Pydantic validation failures is `422 Unprocessable Content`, which more precisely reflects "syntactically valid JSON, semantically invalid value" per HTTP semantics.*
